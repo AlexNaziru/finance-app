@@ -98,6 +98,7 @@ const fetchTransactions = async () => {
       const {data, error} = await supabase
           .from("transactions")
           .select()
+          .order("created_at", {ascending: false})
       if (error) return []
       return data
     })
@@ -122,7 +123,6 @@ const transactionsGroupedByDate = computed(() => {
   }
   return grouped
 })
-console.log(transactionsGroupedByDate.value)
 
 </script>
 
