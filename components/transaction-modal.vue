@@ -4,7 +4,41 @@ import {categories, types} from "~/constants.js";
 const props = defineProps({
   modelValue: Boolean
 })
-const emit = defineEmits(["update:modelValue"])
+
+// This emits events on the DOM
+const emit = defineEmits(["update:modelValue", "saved"])
+
+// Saving data to supabase
+const form = ref()
+const isLoading = ref(false)
+const supabase = useSupabaseClient()
+const toast = useToast()
+const save = async () => {
+  if (form.value.errors.length) return
+  // Storing
+  isLoading.value = true
+  try{
+    const {error} = await supabase
+        .from("transactions")
+        .upsert({...state.value})
+    if (!error) {
+      toast.add({
+        title: "Transaction saved!",
+        icon: "i-heroicons-check-circle"
+      })
+      isOpen.value = false
+      emit("saved")
+    }
+  } catch (e) {
+    toast.add({
+      title: "Transaction not saved!",
+      description: e.message,
+      icon: "i-heroicons-exclamation-circle"
+    })
+  } finally {
+      isLoading.value = false
+  }
+}
 
 // Form validation
 const state = ref({
@@ -28,7 +62,7 @@ const isOpen = computed({
         Add Transaction
       </template>
 
-      <UForm :state="state">
+      <UForm :state="state" ref="form" @submit="save">
         <UFormGroup label="Transaction Type" :required="true" name="type" class="mb-4">
           <USelect placeholder="Select a type" :options="types" v-model="state.type" />
         </UFormGroup>
@@ -49,7 +83,8 @@ const isOpen = computed({
           <USelect placeholder="Category" :options="categories" v-model="state.category" />
         </UFormGroup>
 
-        <UButton type="submit" color="green" variant="solid" label="Save" />
+        <UButton type="submit" color="green" variant="solid" label="Save" :loading="isLoading" />
+                                                                              <!-- isLoading only shows a loading indicator -->
       </UForm>
 
     </UCard>
