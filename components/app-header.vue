@@ -1,5 +1,10 @@
 <script setup>
-
+  const user = useSupabaseUser()
+  watch(user, (user) => {
+    if (user) {
+      alert("Signed in")
+    }
+  }, {immediate: true})
 </script>
 
 <template>
