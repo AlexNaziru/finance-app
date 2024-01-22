@@ -1,6 +1,6 @@
 import {ref} from "vue";
 
-export const useFetchTransactions = () => {
+export const useFetchTransactions = (period) => {
     // Connecting to the supabase db
     const supabase = useSupabaseClient()
     const transactions = ref([])
@@ -26,10 +26,13 @@ export const useFetchTransactions = () => {
     const fetchTransactions = async () => {
         pending.value = true
         try {
-            const {data} = await useAsyncData("transactions", async () => {
+            const {data} = await useAsyncData(`transactions-${period.value.from.toDateString()}-${period.value.to.toDateString()}`, async () => {
                 const {data, error} = await supabase
                     .from("transactions")
                     .select()
+                    .gte("created_at", period.value.from.toISOString())
+                    // gte stands for greater than and lte for less than
+                    .lte("created_at", period.value.to.toISOString())
                     .order("created_at", {ascending: false})
                 if (error) return []
                 return data
@@ -41,6 +44,8 @@ export const useFetchTransactions = () => {
         }
     }
     const refresh = async () => transactions.value = await fetchTransactions()
+    // Watcher to refresh the data on the UI each time I select month, year, day
+    watch(period, async () => await refresh(), {immediate: true})
 
     // Grouping transactions by date
     const transactionsGroupedByDate = computed(() => {

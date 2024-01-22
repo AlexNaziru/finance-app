@@ -30,6 +30,8 @@ const props = defineProps({
   loading: Boolean
 })
 
+// This value will male the currency reactive and will trigger the recalculation of the useCurrency func
+const { amount } = toRefs(props)
 const trendingUp = computed(
     () => props.amount >= props.lastAmount
 )
@@ -37,7 +39,8 @@ const icon = computed(
     () => trendingUp.value ? 'i-heroicons-arrow-trending-up' : 'i-heroicons-arrow-trending-down'
 )
 
-const { currency } = useCurrency(props.amount)
+// This prop is not reactive, and it won't change the data in real time
+const { currency } = useCurrency(amount)
 
 
 const percentageTrend = computed(() => {
