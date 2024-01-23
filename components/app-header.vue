@@ -31,14 +31,19 @@
 </template>
 
 <script setup>
+import {navigateTo} from "#app";
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
+
 const items = [
+  // Account information section
   [{
     label: user.value?.email,
     slot: 'account',
     disabled: true
-  }], [{
+  }],
+  // Dropdown items section
+  [{
     label: 'Settings',
     icon: 'i-heroicons-cog-8-tooth',
     onClick: () => console.log('Link to settings in the future')
@@ -46,9 +51,11 @@ const items = [
     label: 'Sign out',
     icon: 'i-heroicons-arrow-left-on-rectangle',
     onClick: async () => {
-     await supabase.auth.signOut()
-     return navigateTo('/login')
+      await supabase.auth.signOut();
+      navigateTo('/login');
     }
   }]
-]
+];
+console.log(user.value);
+
 </script>
