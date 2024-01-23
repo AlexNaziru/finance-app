@@ -3,7 +3,7 @@ import {userLogged} from "~/composables/userLogged.js";
   const success = ref(false)
   const email = ref("")
   const pending = ref(false)
-  const toast = useToast()
+  const {toastError} = appToast()
   const supabase = useSupabaseClient()
   userLogged()
 
@@ -18,11 +18,9 @@ import {userLogged} from "~/composables/userLogged.js";
         }
       })
       if (error) {
-        toast.add({
+        toastError({
           title: "Error authenticating",
-          icon: "i-heroicons-exclamation-circle",
           description: error.message,
-          color: "red"
         })
       } else {
         success.value = true

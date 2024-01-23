@@ -4,7 +4,7 @@ import 'dotenv/config'
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY, {
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxdHFvZnJzY2FweWhzcXNidGRiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNTQyNTcxNCwiZXhwIjoyMDIxMDAxNzE0fQ.OUhizKKhFcL4QLtzSN_wXS_G_X0lYSkqScY3fE7P-lc", {
         auth: { persistSession: false }
     })
 const categories = ['Food', 'Housing', 'Car', 'Entertainment']

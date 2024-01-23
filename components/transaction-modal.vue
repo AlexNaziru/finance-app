@@ -12,7 +12,7 @@ const emit = defineEmits(["update:modelValue", "saved"])
 const form = ref()
 const isLoading = ref(false)
 const supabase = useSupabaseClient()
-const toast = useToast()
+const {toastSuccess ,toastError} = appToast()
 const save = async () => {
   if (form.value.errors.length) return
   // Storing
@@ -22,18 +22,16 @@ const save = async () => {
         .from("transactions")
         .upsert({...state.value})
     if (!error) {
-      toast.add({
-        title: "Transaction saved!",
-        icon: "i-heroicons-check-circle"
+      toastSuccess({
+        title: "Transaction saved!"
       })
       isOpen.value = false
       emit("saved")
     }
   } catch (e) {
-    toast.add({
+    toastError({
       title: "Transaction not saved!",
       description: e.message,
-      icon: "i-heroicons-exclamation-circle"
     })
   } finally {
       isLoading.value = false
