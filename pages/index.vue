@@ -48,7 +48,9 @@
 
 import {transactionViewOptions} from "~/constants.js";
 
-const selectedView = ref(transactionViewOptions[1])
+const user = useSupabaseUser()
+// This options needs to correlate with the settings.vue user options or by default goes to monthly
+const selectedView = ref(user.value.user_metadata?.transaction_view ?? transactionViewOptions[1])
 
 // The annoying hydration
 import {ref, onMounted} from "vue";
